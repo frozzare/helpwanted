@@ -1,6 +1,6 @@
 # helpwanted
 
-Simple cli tool that render a list of issues on GitHub with label `help wanted`.
+Simple cli tool that render a list of issues on GitHub with label `help wanted`
 
 ## Installation
 
