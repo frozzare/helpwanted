@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"time"
 
 	"github.com/frozzare/helpwanted/search"
 	"github.com/google/go-github/github"
@@ -12,11 +13,11 @@ import (
 
 var (
 	accessToken = flag.String("access-token", "", "Your personal GitHub access token (optional)")
-	sort        = flag.String("sort", "", "The sort field. Can be comments, created, or updated. Default: results are sorted by best match.")
+	lang        = flag.String("lang", "", "Specify language repositories should be written in. Default: all")
 	order       = flag.String("order", "desc", "The sort order if sort parameter is provided. One of asc or desc. Default: desc")
 	page        = flag.Int("page", 1, "Specify further pages. Default: 1.")
 	perPage     = flag.Int("per-page", 30, "Number of items per page. Default: 30.")
-	query       = flag.String("query", "label:\"help wanted\"", "Modify GitHub search query. Default: label: \"help wanted\"")
+	sort        = flag.String("sort", "", "The sort field. Can be comments, created, or updated. Default: results are sorted by best match.")
 )
 
 func main() {
@@ -24,11 +25,11 @@ func main() {
 
 	issues, err := search.NewSearch(&search.Options{
 		AccessToken: *accessToken,
+		Lang:        *lang,
 		Order:       *order,
 		Page:        *page,
 		PerPage:     *perPage,
 		Sort:        *sort,
-		Query:       *query,
 	}).Find()
 
 	if err != nil {
@@ -40,11 +41,16 @@ func main() {
 
 func render(issues []github.Issue) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Title", "URL"})
+	table.SetHeader([]string{"TITLE", "CREATED", "URL"})
 
 	for _, i := range issues {
-		table.Append([]string{i.GetTitle(), i.GetHTMLURL()})
+		table.Append([]string{i.GetTitle(), formatTime(i.GetCreatedAt()), i.GetHTMLURL()})
 	}
 
 	table.Render()
+}
+
+func formatTime(t time.Time) string {
+	layout := "2006-01-02 15:04:05"
+	return t.Format(layout)
 }

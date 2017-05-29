@@ -2,7 +2,9 @@ package search
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
@@ -10,11 +12,11 @@ import (
 
 type Options struct {
 	AccessToken string
+	Lang        string
 	Order       string
 	Sort        string
 	Page        int
 	PerPage     int
-	Query       string
 }
 
 type Search struct {
@@ -42,7 +44,7 @@ func NewSearch(opts *Options) *Search {
 
 // Find search GitHub for issues.
 func (s *Search) Find() ([]github.Issue, error) {
-	res, _, err := s.client.Search.Issues(context.Background(), s.opts.Query, &github.SearchOptions{
+	res, _, err := s.client.Search.Issues(context.Background(), s.Query(), &github.SearchOptions{
 		Order: s.opts.Order,
 		Sort:  s.opts.Sort,
 		ListOptions: github.ListOptions{
@@ -50,9 +52,15 @@ func (s *Search) Find() ([]github.Issue, error) {
 			PerPage: s.opts.PerPage,
 		},
 	})
+
 	if err != nil {
 		return []github.Issue{}, err
 	}
 
 	return res.Issues, nil
+}
+
+// Query returns the search query.
+func (s *Search) Query() string {
+	return fmt.Sprintf("label:\"help wanted\" language:\"%s\" state:open", strings.ToLower(s.opts.Lang))
 }
