@@ -14,11 +14,11 @@ import (
 var (
 	accessToken = flag.String("access-token", "", "Your personal GitHub access token (optional)")
 	labels      = flag.String("labels", "help wanted", "Comma separated list of labels.")
-	lang        = flag.String("lang", "", "Comma separated list of language repositories should be written in.")
+	lang        = flag.String("lang", "", "Comma separated list of language repositories should be written in. (default all)")
 	order       = flag.String("order", "desc", "The sort order if sort parameter is provided. One of asc or desc.")
 	page        = flag.Int("page", 1, "Specify further pages.")
 	perPage     = flag.Int("per-page", 30, "Number of items per page.")
-	sort        = flag.String("sort", "", "The sort field. Can be comments, created, or updated. Default: results are sorted by best match.")
+	sort        = flag.String("sort", "", "The sort field. Can be comments, created, or updated. (default results are sorted by best match)")
 )
 
 func main() {
