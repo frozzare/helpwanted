@@ -69,11 +69,11 @@ func (s *Search) Query() string {
 	}
 
 	for _, s := range strings.Split(strings.ToLower(s.opts.Lang), ",") {
-		f = append(f, fmt.Sprintf("language: \"%s\"", s))
+		f = append(f, fmt.Sprintf("language:\"%s\"", s))
 	}
 
 	for _, s := range strings.Split(strings.ToLower(s.opts.Labels), ",") {
-		f = append(f, fmt.Sprintf("label: \"%s\"", s))
+		f = append(f, fmt.Sprintf("label:\"%s\"", s))
 	}
 
 	return strings.Join(f, " ")
