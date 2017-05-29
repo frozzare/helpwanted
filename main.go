@@ -43,7 +43,7 @@ func render(issues []github.Issue) {
 	table.SetHeader([]string{"Title", "URL"})
 
 	for _, i := range issues {
-		table.Append([]string{i.GetTitle(), i.GetURL()})
+		table.Append([]string{i.GetTitle(), i.GetHTMLURL()})
 	}
 
 	table.Render()
