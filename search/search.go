@@ -65,6 +65,7 @@ func (s *Search) Find() ([]github.Issue, error) {
 func (s *Search) Query() string {
 	f := []string{
 		"state:open",
+		"type:issue",
 	}
 
 	for _, s := range strings.Split(strings.ToLower(s.opts.Lang), ",") {
