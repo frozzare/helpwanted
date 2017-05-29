@@ -12,6 +12,7 @@ import (
 
 type Options struct {
 	AccessToken string
+	Labels      string
 	Lang        string
 	Order       string
 	Sort        string
@@ -62,5 +63,17 @@ func (s *Search) Find() ([]github.Issue, error) {
 
 // Query returns the search query.
 func (s *Search) Query() string {
-	return fmt.Sprintf("label:\"help wanted\" language:\"%s\" state:open", strings.ToLower(s.opts.Lang))
+	f := []string{
+		"state:open",
+	}
+
+	for _, s := range strings.Split(strings.ToLower(s.opts.Lang), ",") {
+		f = append(f, fmt.Sprintf("language: \"%s\"", s))
+	}
+
+	for _, s := range strings.Split(strings.ToLower(s.opts.Labels), ",") {
+		f = append(f, fmt.Sprintf("label: \"%s\"", s))
+	}
+
+	return strings.Join(f, " ")
 }

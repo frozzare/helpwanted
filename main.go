@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"log"
+	"fmt"
 	"os"
 	"time"
 
@@ -13,7 +13,8 @@ import (
 
 var (
 	accessToken = flag.String("access-token", "", "Your personal GitHub access token (optional)")
-	lang        = flag.String("lang", "", "Specify language repositories should be written in. Default: all")
+	labels      = flag.String("labels", "help wanted", "Comma separated list of labels. Default: help wanted")
+	lang        = flag.String("lang", "", "Comma separated list of language repositories should be written in. Default: all")
 	order       = flag.String("order", "desc", "The sort order if sort parameter is provided. One of asc or desc. Default: desc")
 	page        = flag.Int("page", 1, "Specify further pages. Default: 1.")
 	perPage     = flag.Int("per-page", 30, "Number of items per page. Default: 30.")
@@ -23,17 +24,24 @@ var (
 func main() {
 	flag.Parse()
 
-	issues, err := search.NewSearch(&search.Options{
+	search := search.NewSearch(&search.Options{
 		AccessToken: *accessToken,
+		Labels:      *labels,
 		Lang:        *lang,
 		Order:       *order,
 		Page:        *page,
 		PerPage:     *perPage,
 		Sort:        *sort,
-	}).Find()
+	})
+
+	fmt.Printf("Searching: %s\n", search.Query())
+
+	issues, err := search.Find()
 
 	if err != nil {
-		log.Printf("GitHub search failed: %s\n", err.Error())
+		fmt.Printf("GitHub search failed: %s\n", err.Error())
+	} else if len(issues) == 0 {
+		fmt.Println("No issues found")
 	} else {
 		render(issues)
 	}
